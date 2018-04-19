@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Animal Buttons</title>
+</head>
+
+<body>
+  <button data-animal="cat">meow</button>
+  <button data-animal="dog">woof</button>
+  <button data-animal="bird">chirp</button>
+
+  <!-- Dynamic list of animal buttons -->
+  <div id="animal-buttons-go-here"></div>
+
+  <!-- Input Form -->
+  <form>
+    <span id="add-animal-span">Add an Animal:
+      <input id="new-animal-input" type="text">
+      <input id="add-animal-submit" value="Add Animal" type="submit">
+    </span>
+  </form>
+
+  <div id="gifs-appear-here">
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+  <script type="text/javascript">
+
+    var animalArray = ["cat", "dog", "pig"]
+
+    // Adding click event listen listener to all buttons
+    // $("button").on("click",
+    $(document.body).on("click", "button", function () {
+      // Grabbing and storing the data-animal property value from the button
+      var animal = $(this).attr("data-animal");
+
+      // Constructing a queryURL using the animal name
+      var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
+        animal + "&api_key=EMBfpXpNjy7nMgYzLshSd8Ng1MGvXEGx&limit=5"; //"&api_key=dc6zaTOxFJmzC&limit=10";
+
+      // Performing an AJAX request with the queryURL
+      $.ajax({
+        url: queryURL,
+        method: "GET"
+      })
+        // After data comes back from the request
+        .then(function (response) {
+          console.log(queryURL);
+
+          console.log(response);
+          // storing the data from the AJAX request in the results variable
+          var results = response.data;
+
+          // Looping through each result item
+          for (var i = 0; i < results.length; i++) {
+
+            // Creating and storing a div tag
+            var animalDiv = $("<div>");
+
+            // Creating a paragraph tag with the result item's rating
+            var p = $("<p>").text("Rating: " + results[i].rating);
+
+            // Creating and storing an image tag
+            var animalImage = $("<img>");
+            // Setting the src attribute of the image to a property pulled off the result item
+            animalImage.attr("src", results[i].images.fixed_height.url);
+
+            // Appending the paragraph and image tag to the animalDiv
+            animalDiv.append(p);
+            animalDiv.append(animalImage);
+
+            // Prependng the animalDiv to the HTML page in the "#gifs-appear-here" div
+            $("#gifs-appear-here").prepend(animalDiv);
+          }
+        }); // .then()
+    }); // button onClick
+
+
+    //  On Click event associated with the add-animal form
+    $("#add-animal-submit").on("click", function (event) {
+      event.preventDefault();
+
+      var newAnimal = $('#new-animal-input').val().trim();
+
+      animalArray.push(newAnimal);
+
+      // Add new ToDo Item to localStorage
+      localStorage.clear();
+      localStorage.setItem("Animals", JSON.stringify(animalArray));
+
+      // Clear text & set focus
+      $("#new-animal-input").val('').focus();
+
+      displayAnimalList();
+
+    });
+
+    function displayAnimalList() {
+      $('#animal-buttons-go-here').html('');
+      for (var i = 0; i < animalArray.length; i++) {
+        $('#animal-buttons-go-here').append(
+            `<button data-animal="${animalArray[i]}">${animalArray[i]}</button>`
+          // `<p class="to-do-item"><button class="checkbox" data-index="${i}">✓</button>${todoArray[i]}</p>`
+        );
+      }
+    }
+  </script>
+</body>
+
+</html>
