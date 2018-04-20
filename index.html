@@ -7,12 +7,9 @@
 </head>
 
 <body>
-  <button data-animal="cat">meow</button>
-  <button data-animal="dog">woof</button>
-  <button data-animal="bird">chirp</button>
 
   <!-- Dynamic list of animal buttons -->
-  <div id="animal-buttons-go-here"></div>
+  <div id="animal-buttons-go-here"></div><br>
 
   <!-- Input Form -->
   <form>
@@ -28,7 +25,20 @@
 
   <script type="text/javascript">
 
-    var animalArray = ["cat", "dog", "pig"]
+    var animalArray = [];
+
+    window.onload = function () {
+      storedAnimalArray = JSON.parse(localStorage.getItem("Animals"));
+      if (storedAnimalArray.length > 0) {
+        animalArray = storedAnimalArray;
+      } else {
+        animalArray = ["cat", "dog", "bird"];
+      }
+      displayAnimalList();
+    };
+
+    
+
 
     // Adding click event listen listener to all buttons
     // $("button").on("click",
@@ -38,7 +48,7 @@
 
       // Constructing a queryURL using the animal name
       var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
-        animal + "&api_key=EMBfpXpNjy7nMgYzLshSd8Ng1MGvXEGx&limit=5"; //"&api_key=dc6zaTOxFJmzC&limit=10";
+        animal + "&api_key=EMBfpXpNjy7nMgYzLshSd8Ng1MGvXEGx&limit=5"; 
 
       // Performing an AJAX request with the queryURL
       $.ajax({
@@ -47,11 +57,12 @@
       })
         // After data comes back from the request
         .then(function (response) {
-          console.log(queryURL);
+          // console.log(queryURL);
 
-          console.log(response);
+          // console.log(response);
           // storing the data from the AJAX request in the results variable
           var results = response.data;
+          console.log(results);
 
           // Looping through each result item
           for (var i = 0; i < results.length; i++) {
@@ -65,7 +76,15 @@
             // Creating and storing an image tag
             var animalImage = $("<img>");
             // Setting the src attribute of the image to a property pulled off the result item
-            animalImage.attr("src", results[i].images.fixed_height.url);
+            animalImage.attr("src", results[i].images.fixed_height_still.url);
+            // Setting the data-still attribute of the image to a property pulled off the result item
+            animalImage.attr("data-still", results[i].images.fixed_height_still.url);
+            // Setting the data-animate attribute of the image to a property pulled off the result item
+            animalImage.attr("data-animate", results[i].images.fixed_height.url);
+            // Setting the data-state attribute to still
+            animalImage.attr("data-state", "still");
+            // Setting the class attribute to gif-button
+            animalImage.attr("class", "gif-button");
 
             // Appending the paragraph and image tag to the animalDiv
             animalDiv.append(p);
@@ -84,9 +103,11 @@
 
       var newAnimal = $('#new-animal-input').val().trim();
 
-      animalArray.push(newAnimal);
+      if (!animalArray.includes(newAnimal)) {
+        animalArray.push(newAnimal);
+      }
 
-      // Add new ToDo Item to localStorage
+      // Add new Animal to localStorage
       localStorage.clear();
       localStorage.setItem("Animals", JSON.stringify(animalArray));
 
@@ -98,14 +119,58 @@
     });
 
     function displayAnimalList() {
-      $('#animal-buttons-go-here').html('');
+      $('#animal-buttons-go-here').html('<p>Click Animal Buttons for fun images: </p>');
       for (var i = 0; i < animalArray.length; i++) {
         $('#animal-buttons-go-here').append(
-            `<button data-animal="${animalArray[i]}">${animalArray[i]}</button>`
-          // `<p class="to-do-item"><button class="checkbox" data-index="${i}">✓</button>${todoArray[i]}</p>`
+          `<button data-animal="${animalArray[i]}">${animalArray[i]}</button>`
         );
       }
+      $('#animal-buttons-go-here').append('<br>');
     }
+
+
+     $(document.body).on("click", ".gif-button", function() {
+      // STEP ONE: study the html above.
+      // Look at all the data attributes.
+      // Run the file in the browser. Look at the images.
+
+      // After we complete steps 1 and 2 we'll be able to pause gifs from giphy.
+
+      // STEP TWO: make a variable named state and then store the image's data-state into it.
+      // Use the .attr() method for this.
+
+      // ============== FILL IN CODE HERE FOR STEP TWO =========================
+
+      var $img = $(this);
+      var state = $img.attr('data-state');
+
+      // =============================================
+
+      // STEP THREE: Check if the variable state is equal to 'still',
+      // then update the src attribute of this image to it's data-animate value,
+      // and update the data-state attribute to 'animate'.
+
+      // If state is equal to 'animate', then update the src attribute of this
+      // image to it's data-still value and update the data-state attribute to 'still'
+      // ============== FILL IN CODE HERE FOR STEP THREE =========================
+
+      if ( state == "still" ) {
+        var animated_gif_url = $img.attr('data-animate');
+        // $img.attr('src', animated_gif_url);
+        // $img.attr('data-state', "animate");
+        $img.attr({ 'src': animated_gif_url, 'data-state': 'animate' });
+      } else {
+        var still_gif_url = $img.attr('data-still');
+        // $img.attr('src', still_gif_url);
+        // $img.attr('data-state', "still");
+        $img.attr({ 'src': still_gif_url, 'data-state': 'still' });
+      }
+
+      // ==============================================
+
+      // STEP FOUR: open the file in the browser and click on the images.
+      // Then click again to pause.
+    });
   </script>
 </body>
 
