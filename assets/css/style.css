@@ -1,0 +1,32 @@
+.jumbotron {
+    background-image: url("../images/collage-softer.jpg");
+    background-size: cover;
+    color: rgb(32, 140, 199);
+    text-shadow:
+        -1px -1px 0 black,
+        1px -1px 0 black,
+        -1px 1px 0 black,
+        1px 1px 0 black; 
+}
+
+body {
+    background-color: whitesmoke;
+    font-weight: bold;
+}
+
+button {
+    margin: 4px;
+    background-color: rgb(32, 140, 199);
+    color: white;
+}
+
+input[type=submit] {
+    margin-top: 4px;
+    background-color: rgb(32, 140, 199);
+    color: white;
+}
+
+img {
+    float: left;
+    margin: 5px;
+}
