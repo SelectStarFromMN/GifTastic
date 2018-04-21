@@ -27,13 +27,13 @@
   <div class="container">
     <!-- Dynamic list of animal buttons -->
     <div id="buttons-hint" class="row">
-      <div class="col-8">
-        <div>Click the Buttons for fun images: </div>
+      <div class="col-7">
+        <div>Click the Buttons for <span><input id="how-many" type="number" value="5" required="true" min="1" max="20"></input></span> fun images: </div>
         <div id="animal-buttons-go-here" class="row"></div>
       </div>
 
       <!-- Input Form -->
-      <div class="col-4">
+      <div class="col-5">
         <form>
           <span id="add-animal-span">Add an Animal (or whatever):
             <input id="new-animal-input" type="text">
@@ -47,8 +47,8 @@
     <!-- Dynamic Elements -->
     <div id="click-hint"></div>
     <div id="gifs-appear-here"></div>
-  </div>
-  <!-- Bootstrap Container -->
+
+  </div> <!-- Bootstrap Container -->
   <!-- Link to JavaScript -->
   <script src="./assets/javascript/app.js"></script>
 </body>

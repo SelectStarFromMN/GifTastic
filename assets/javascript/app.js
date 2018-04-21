@@ -4,7 +4,7 @@ var animalArray = [];
 // Let's use localStorage so user doesn't need to reenter favorite animals
 window.onload = function () {
     storedAnimalArray = JSON.parse(localStorage.getItem("Animals"));
-    if (storedAnimalArray.length > 0) {
+    if (storedAnimalArray && storedAnimalArray.length > 0) {
         animalArray = storedAnimalArray;
     } else {
         animalArray = ["cat", "dog", "bird"];
@@ -19,10 +19,10 @@ window.onload = function () {
 $(document.body).on("click", "button", function () {
     // Grab and store the data-animal property value from the button
     var animal = $(this).attr("data-animal");
+    var limitCount = $("#how-many").val();
 
     // Construct a queryURL using the animal name
-    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
-        animal + "&api_key=EMBfpXpNjy7nMgYzLshSd8Ng1MGvXEGx&limit=10";
+    var queryURL = `https://api.giphy.com/v1/gifs/search?q=${animal}&api_key=EMBfpXpNjy7nMgYzLshSd8Ng1MGvXEGx&limit=${limitCount}`;
 
     // Perform an AJAX request with the queryURL
     $.ajax({
@@ -40,31 +40,37 @@ $(document.body).on("click", "button", function () {
             // Loop through each result item
             for (var i = 0; i < results.length; i++) {
 
-                // Create and store a div tag
-                var animalDiv = $("<div>");
+                var $animalDiv = $("<div>");                                    // jquery virtual div element
+                var possibleStates = ['still', 'animate'];                      // Initial state possibilities
+                var initialState = possibleStates[Math.round(Math.random())];   // Randomized initial state
+                var stillImageUrl = results[i].images.fixed_height_still.url;
+                var activeImageUrl = results[i].images.fixed_height.url;
+                var initialUrl = (initialState == 'still') ? stillImageUrl : activeImageUrl;
 
                 // Create a paragraph tag with the result item's rating
+                // Choosing to eliminate this for a cleaner look
                 // var p = $("<p>").text(`Rating: ${results[i].rating.toUpperCase()}`);
 
                 // Create and store an image tag
                 var animalImage = $("<img>");
-                // Set the src attribute to the fixed-still image url (initially still)
-                animalImage.attr("src", results[i].images.fixed_height_still.url);
-                // Set the data-still attribute to the fixed-still image (same as above, stashed for toggling between)
-                animalImage.attr("data-still", results[i].images.fixed_height_still.url);
+                // Set the src attribute to the initial image url (random)
+                animalImage.attr("src", initialUrl);
+                // Set the data-still attribute to the fixed-still image 
+                animalImage.attr("data-still", stillImageUrl);
                 // Set the data-animate attribute to the fixed-height (non-still) image url
-                animalImage.attr("data-animate", results[i].images.fixed_height.url);
-                // Set the initial data-state attribute to still (we've started with the fixed-still url above)
-                animalImage.attr("data-state", "still");
+                animalImage.attr("data-animate", activeImageUrl);
+                // Set the initial data-state attribute to initial state (randomized)
+                animalImage.attr("data-state", initialState);
                 // Set the class attribute to gif-button (so we can target it with jquery click event)
                 animalImage.attr("class", "gif-button");
 
                 // Append the paragraph and image tag to the animalDiv
+                // Eliminated rating-paragraph for cleaner look
                 // animalDiv.append(p);
-                animalDiv.append(animalImage);
+                $animalDiv.append(animalImage);
 
                 // Prepend the animalDiv to the HTML page in the "#gifs-appear-here" div
-                $("#gifs-appear-here").prepend(animalDiv);
+                $("#gifs-appear-here").prepend($animalDiv);
             }
         }); // .then()
 }); // button onClick
