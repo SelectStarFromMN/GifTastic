@@ -35,7 +35,7 @@ $(document.body).on("click", "button", function () {
             var results = response.data; // Array of objects
 
             // Add hint
-            $("#click-hint").text("Click any GIFs below to start/stop animation.")
+            $("#click-hint").text("Click any GIFs below to start/stop animation:")
 
             // Loop through each result item
             for (var i = 0; i < results.length; i++) {
