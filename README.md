@@ -6,3 +6,5 @@ Some enhancements include:
     Uses localStorage so users don't have to reenter their favorite animals when reloading.
     Random initial-state of loaded GIFs (animated vs still -- less boring).
     Unified "collage" styling which is fairly appealing (better than example imho).
+
+Live at: https://selectstarfrommn.github.io/GifTastic/
